@@ -1,12 +1,11 @@
-# Librerie ----
 library(openxlsx)
+wb <- createWorkbook()
 
 # Caricamento del dataset ----
-cat("Caricamento del dataset","\n")
 ds <- read.csv("Dataset.csv", header=TRUE, sep=",")
 
 # Definizione intervalli ----
-#TODO: eventualmente modificare range di intervalli e scegliere come dividere o non dividere features
+#TODO: modificare range di intervalli e scegliere come dividere o non dividere features
 colonne_intervalli <- c("url_length", "number_of_digits_in_url", "number_of_special_char_in_url",
                         "number_of_slash_in_url", "number_of_questionmark_in_url","domain_length",
                         "number_of_dots_in_domain", "number_of_hyphens_in_domain",
@@ -35,15 +34,9 @@ breaks_lista <- list(
 # Nomi delle features
 row_nomi_features <- names(ds)
 
-# Misure descrittive calcolate per tutte le features senza intervalli ----
+# Misure descrittive calcolate per tutte le features (senza tener conto degli intervalli) ----
 col_misure_descrittive_univar <- c("Media","Moda","Mediana", "Varianza", 
                                "Dev. Standard", "Quantili", "Range", "IQR")
-
-# Creazione dataframe vuoto per ospitare i risultati ----
-df <- data.frame(matrix(ncol = length(misure_descrittive_univar),
-                         nrow = length(nomi_features)))
-row.names(df) <- nomi_features
-colnames(df) <- col_misure_descrittive_univar
 
 # Funzione per calcolare la moda ----
 calcolate_mode <- function(x) {
@@ -51,44 +44,59 @@ calcolate_mode <- function(x) {
   ux[which.max(tabulate(match(x, ux)))]
 }
 
-# Loop per calcolare le misure descrittive ----
-# Per una visualizzazione più chiara si sono arrotondati i valori a 4 cifre decimali
-for (row in nomi_features) {
-    df[row, "Media"] <- format(round(mean(ds[[row]]), 4), scientific = FALSE)
-    df[row, "Moda"] <- format(round(calcolate_mode(ds[[row]]), 4), scientific = FALSE)
-    df[row, "Mediana"] <- format(round(median(ds[[row]]), 4), scientific = FALSE)
-    df[row, "Varianza"] <- format(round(var(ds[[row]]), 4), scientific = FALSE)
-    df[row, "Dev. Standard"] <- format(round(sd(ds[[row]]), 4), scientific = FALSE)
-    df[row, "Quantili"] <- paste(format(round(quantile(ds[[row]], probs = c(0.25, 0.5, 0.75)), 4), scientific = FALSE), collapse = ", ")
-    df[row, "Range"] <- format(round(diff(range(ds[[row]])), 4), scientific = FALSE)
-    df[row, "IQR"] <- format(round(IQR(ds[[row]]), 4), scientific = FALSE)
-}
+# Aggiunge un foglio al workbook relativo all'"Analisi univariata"
+addWorksheet(wb, "Analisi univariata")
 
-# Salva l'intero dataframe in un file .csv ----
-#TODO salvarlo in un file .xlsx e accodare i risultati dell'analisi delle frequenze, non so se sia possibile
-output <- "risultati_analisi_univariata.csv"
+# Imposta la riga di partenza
+start_row <- 2
+start_col <- 1
 
-write.csv(df, file = output, row.names = TRUE)
+# Scrive i nomi delle colonne (le misure) nella prima riga
+# Crea un data.frame con "Feature" seguito dai nomi delle misure descrittive per una corretta visualizzazione
+col_names <- c("Feature", col_misure_descrittive_univar)
 
-# Crea una nuova cartella per memorizzare i singoli risultati per feature in file .csv ----
+# Scrive i dati nel foglio Excel
+writeData(wb, sheet = "Analisi univariata", 
+          x = t(as.data.frame(col_names)), 
+          startRow = 1, startCol = 1, colNames = FALSE)
 
-cartella_output <- "analisi_singole_features"
-
-if (!dir.exists(cartella_output)) {
-  dir.create(cartella_output)
-}
-
-for (feature in row.names(df)) {
-  output_file <- paste0(cartella_output, "/", "analisi_", feature, ".csv")
+for (colonna in nomi_features) {
   
-  riga <- df[feature, , drop = FALSE]
+  # Calcola le misure descrittive per la feature
+  media <- format(round(mean(ds[[colonna]]), 4), scientific = FALSE)
+  moda <- format(round(calcolate_mode(ds[[colonna]]), 4), scientific = FALSE)
+  mediana <- format(round(median(ds[[colonna]]), 4), scientific = FALSE)
+  varianza <- format(round(var(ds[[colonna]]), 4), scientific = FALSE)
+  dev_standard <- format(round(sd(ds[[colonna]]), 4), scientific = FALSE)
+  quantili <- paste(format(round(quantile(ds[[colonna]], probs = c(0.25, 0.5, 0.75)), 4), scientific = FALSE), collapse = ", ")
+  range_val <- format(round(diff(range(ds[[colonna]])), 4), scientific = FALSE)
+  iqr <- format(round(IQR(ds[[colonna]]), 4), scientific = FALSE)
   
-  write.csv(riga, file = output_file, row.names = TRUE)
+  # Crea una tabella con i risultati per la feature
+  df_temp <- data.frame(
+    Feature = colonna,
+    Media = media,
+    Moda = moda,
+    Mediana = mediana,
+    Varianza = varianza,
+    `Dev. Standard` = dev_standard,
+    Quantili = quantili,
+    Range = range_val,
+    IQR = iqr
+  )
+  
+  # Scrive i valori delle misure nel foglio Excel
+  writeData(wb, sheet = "Analisi univariata", 
+            x = df_temp, 
+            startRow = start_row, startCol = start_col, colNames = FALSE)
+  
+  # Incrementa la riga per il set successivo di misure
+  start_row <- start_row + 1
 }
 
-# Calcolo misure descrittive rimanenti non visualizzabili tramite dataframe ----
+saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
 
-# Frequenze per variabili non divise in intervalli
+# Frequenze per variabili non divise in intervalli ----
 # Trova le colonne senza intervalli
 colonne_non_intervalli <- setdiff(row_nomi_features, colonne_intervalli)
 
@@ -114,23 +122,17 @@ frequenze_intervalli <- lapply(colonne_intervalli, function(colonna) {
   frequenze_assolute <- table(ds[[paste0(colonna, "_classi")]])
   frequenze_relative <- prop.table(frequenze_assolute)
   
-  # Ritorna entrambe le frequenze in una lista
+  # Restituisce entrambe le frequenze in una lista
   list(assolute = frequenze_assolute, relative = frequenze_relative)
 })
 
 # Assegna i nomi alle frequenze
 names(frequenze_intervalli) <- colonne_intervalli
 
-# Output analisi delle frequenze su file .xlsx
-#TODO: provare ad accodare tutto in un unico .xlsx
-
-# Creazione del workbook ----
-wb <- createWorkbook()
-
-# Aggiungi il foglio per le frequenze non intervallate
+# Aggiunge il foglio per le frequenze non intervallate
 addWorksheet(wb, "Frequenze_non_intervalli")
 
-# Scrivi i dati delle frequenze per le variabili non intervallo
+# Scrive i dati delle frequenze per le variabili senza intervalli
 start_row <- 1  # Riga di partenza per la scrittura dei dati
 
 for (colonna in colonne_non_intervalli) {
@@ -138,28 +140,28 @@ for (colonna in colonne_non_intervalli) {
   frequenze_assolute <- frequenze_non_intervalli[[colonna]]$assolute
   frequenze_relative <- frequenze_non_intervalli[[colonna]]$relative
   
-  # Crea una tabella da scrivere
+  # Crea un df
   df <- data.frame(
     Valori = names(frequenze_assolute),
     Frequenze_Assolute = as.numeric(frequenze_assolute),
     Frequenze_Relative = round(as.numeric(frequenze_relative), 4)  # Arrotonda le frequenze relative
   )
   
-  # Scrivi nel foglio Excel il nome della feature e le sue frequenze
+  # Scrive nel foglio Excel il nome della feature e le sue frequenze
   writeData(wb, sheet = "Frequenze_non_intervalli", x = data.frame(Feature = colonna), startRow = start_row, startCol = 1, colNames = FALSE)
   start_row <- start_row + 1  # Aggiungi una riga per separare il nome della feature dai dati
   
-  # Scrivi la tabella delle frequenze
+  # Scrive la tabella delle frequenze
   writeData(wb, sheet = "Frequenze_non_intervalli", x = df, startRow = start_row, startCol = 1, colNames = TRUE)
   
-  # Aggiungi una riga vuota dopo ogni set di dati
+  # Aggiunge una riga vuota dopo ogni set di dati
   start_row <- start_row + nrow(df) + 2
 }
 
-# Aggiungi il foglio per le frequenze intervallate
+# Aggiunge il foglio per le frequenze intervallate
 addWorksheet(wb, "Frequenze_intervalli")
 
-# Scrivi i dati delle frequenze per le variabili intervallo
+# Scrive i dati delle frequenze per le variabili con intervalli
 start_row <- 1  # Reset della riga di partenza per il nuovo foglio
 
 for (colonna in colonne_intervalli) {
@@ -173,7 +175,7 @@ for (colonna in colonne_intervalli) {
   frequenze_assolute <- table(ds[[paste0(colonna, "_classi")]])
   frequenze_relative <- prop.table(frequenze_assolute)
   
-  # Crea una tabella da scrivere
+  # Crea un df
   df <- data.frame(
     Intervallo = names(frequenze_assolute),
     Frequenze_Assolute = as.numeric(frequenze_assolute),
@@ -192,10 +194,109 @@ for (colonna in colonne_intervalli) {
 }
 
 # Salva il workbook in un file chiamato "Analisi_frequenze.xlsx" nella directory di lavoro
-saveWorkbook(wb, "Analisi_frequenze.xlsx", overwrite = TRUE)
+saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
 
 # Funzione di distribuzione empirica ----
-#TODO
+# Aggiungi il foglio per le frequenze con intervalli (Distribuzione Cumulativa)
+addWorksheet(wb, "Frequenze_intervalli_cumulativa")
 
-# Summary
-#TODO
+# Scrive i dati delle frequenze con intervalli
+start_row <- 1  # Riga di partenza per la scrittura dei dati
+
+for (colonna in names(ds)) {
+  
+  if (colonna %in% colonne_intervalli) {
+    # Recupera i breaks associati alla colonna
+    intervalli <- breaks_lista[[paste0(colonna, "_breaks")]]
+    # Crea le classi della colonna
+    ds[[paste0(colonna, "_classi")]] <- cut(ds[[colonna]], breaks = intervalli, include.lowest = TRUE)
+    # Calcola frequenze assolute e relative
+    frequenze_assolute <- table(ds[[paste0(colonna, "_classi")]])
+    frequenze_relative <- prop.table(frequenze_assolute)
+    # Calcola la distribuzione cumulativa con cumsum
+    distribuzione_cumulativa <- cumsum(frequenze_relative)
+    
+    # Crea un df
+    df <- data.frame(
+      Intervallo = names(frequenze_assolute),
+      Frequenze_Relative = round(as.numeric(frequenze_relative), 4),
+      Distribuzione_Cumulativa = round(as.numeric(distribuzione_cumulativa), 4)
+    )
+    
+    # Scrive nel foglio Excel il nome della feature e le sue frequenze
+    writeData(wb, sheet = "Frequenze_intervalli_cumulativa", x = data.frame(Feature = colonna), startRow = start_row, startCol = 1, colNames = FALSE)
+    start_row <- start_row + 1  # Aggiungi una riga per separare il nome della feature dai dati
+    
+    # Scrive la tabella delle frequenze
+    writeData(wb, sheet = "Frequenze_intervalli_cumulativa", x = df, startRow = start_row, startCol = 1, colNames = TRUE)
+    
+    # Aggiunge una riga vuota dopo ogni set di dati
+    start_row <- start_row + nrow(df) + 2
+  }
+}
+
+# Aggiunge il foglio per le frequenze senza intervalli (FDE)
+addWorksheet(wb, "Frequenze_FDE")
+
+# Scrive i dati delle frequenze senza intervalli
+start_row <- 1  # Reset della riga di partenza per il nuovo foglio
+
+for (colonna in names(ds)) {
+  
+  if (!(colonna %in% colonne_intervalli) && is.numeric(ds[[colonna]])) {
+    
+    # Calcola la funzione di distribuzione empirica
+    dist_emp <- ecdf(ds[[colonna]])
+    valori_unici <- sort(unique(ds[[colonna]]))
+    
+    # Crea una tabella da scrivere
+    df <- data.frame(
+      Valore = valori_unici,
+      FDE = round(sapply(valori_unici, dist_emp), 4)
+    )
+    
+    # Scrive nel foglio Excel il nome della feature e i valori della FDE
+    writeData(wb, sheet = "Frequenze_FDE", x = data.frame(Feature = colonna), startRow = start_row, startCol = 1, colNames = FALSE)
+    start_row <- start_row + 1  # Aggiungi una riga per separare il nome della feature dai dati
+    
+    # Scrive la tabella della FDE
+    writeData(wb, sheet = "Frequenze_FDE", x = df, startRow = start_row, startCol = 1, colNames = TRUE)
+    
+    # Aggiunge una riga vuota dopo ogni set di dati
+    start_row <- start_row + nrow(df) + 2
+  }
+}
+
+# Salva il workbook finale
+saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
+
+# Summary ----
+
+addWorksheet(wb, "Riepilogo_summary")
+
+start_row <- 1  # Riga di partenza per la scrittura dei dati
+
+for (colonna in names(ds)) {
+  
+  # Calcola il riepilogo statistico con summary()
+  summary_stats <- summary(ds[[colonna]])
+  
+  # Converte il risultato in un dataframe per una scrittura chiara
+  df <- data.frame(
+    Statistica = names(summary_stats),
+    Valore = as.numeric(summary_stats)
+  )
+  
+  # Scrive il nome della colonna nel foglio
+  writeData(wb, sheet = "Riepilogo_summary", x = data.frame(Feature = colonna), startRow = start_row, startCol = 1, colNames = FALSE)
+  start_row <- start_row + 1  # Riga vuota tra il nome della feature e i dati
+  
+  # Scrive la tabella delle statistiche summary
+  writeData(wb, sheet = "Riepilogo_summary", x = df, startRow = start_row, startCol = 1, colNames = TRUE)
+  
+  # Aggiunge una riga vuota dopo ogni tabella per leggibilità
+  start_row <- start_row + nrow(df) + 2
+}
+
+# Salva il workbook con il nuovo foglio aggiunto
+saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
