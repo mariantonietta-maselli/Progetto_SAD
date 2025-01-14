@@ -60,7 +60,7 @@ writeData(wb, sheet = "Analisi univariata",
           x = t(as.data.frame(col_names)), 
           startRow = 1, startCol = 1, colNames = FALSE)
 
-for (colonna in nomi_features) {
+for (colonna in row_nomi_features) {
   
   # Calcola le misure descrittive per la feature
   media <- format(round(mean(ds[[colonna]]), 4), scientific = FALSE)
