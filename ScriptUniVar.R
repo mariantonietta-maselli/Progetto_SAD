@@ -2,33 +2,25 @@ library(openxlsx)
 wb <- createWorkbook()
 
 # Caricamento del dataset ----
-ds <- read.csv("Dataset.csv", header=TRUE, sep=",")
+ds <- read.csv("Dataset.csv", header=TRUE, sep=",") #ALL
+#ds <- dataset1[dataset1$Type == 1,] #TRUE
+#ds <- dataset1[dataset1$Type == 0,] #FALSE
 
 # Definizione intervalli ----
 #TODO: modificare range di intervalli e scegliere come dividere o non dividere features
 colonne_intervalli <- c("url_length", "number_of_digits_in_url", "number_of_special_char_in_url",
-                        "number_of_slash_in_url", "number_of_questionmark_in_url","domain_length",
-                        "number_of_dots_in_domain", "number_of_hyphens_in_domain",
-                        "number_of_special_characters_in_domain", "number_of_digits_in_domain",
-                        "number_of_subdomains", "average_subdomain_length",
-                        "number_of_digits_in_subdomain", "entropy_of_url", "entropy_of_domain")
+                        "domain_length", "number_of_digits_in_domain", "average_subdomain_length",
+                        "entropy_of_url", "entropy_of_domain")
 
 breaks_lista <- list(
   url_length_breaks = c(11, 25, 50, 75, 100, 125, 150, 175, 191),
   number_of_digits_in_url_breaks = c(-1, 25, 50, 75, 100, 125, 144),
   number_of_special_char_in_url_breaks = c(3, 9, 15, 25, 50, 75),
-  number_of_slash_in_url_breaks = c(2, 5, 10, 15, 20, 25, 30),
-  number_of_questionmark_in_url_breaks = c(-1, 3, 6, 9, 12, 15, 17),
-  domain_length_breaks = c(-1,14,21,50,100,182),
-  number_of_dots_in_domain_breaks = c(-1,1,3,10,28),
-  number_of_hyphens_in_domain_breaks = c(-1,0,1,5,23),
-  number_of_special_characters_in_domain_breaks = c(-1,0,5,15,47),
-  number_of_digits_in_domain_breaks = c(-1,0,10,50,144),
-  number_of_subdomains_breaks = c(-1,2,5,10,27),
-  average_subdomain_length_breaks = c(-1,3,8,20,110),
-  number_of_digits_in_subdomain_breaks = c(-1,0,5,15,44),
+  domain_length_breaks = c(-1,25,50,75,100,125,150,175,182),
+  number_of_digits_in_domain_breaks = c(-1, 10,25,50,75,100, 144),
+  average_subdomain_length_breaks = c(-1,25,50,75,100,110),
   entropy_of_domain_breaks = seq(1.386, 4.957, by = 0.3571),
-  entropy_of_url_breaks = seq(2.649, 5.866, by = 0.2683) 
+  entropy_of_url_breaks = seq(2.649, 5.866, by = 0.2683)
 )
 
 # Nomi delle features
