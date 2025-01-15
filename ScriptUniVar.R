@@ -1,24 +1,24 @@
+# Librerie----
 library(openxlsx)
+library(dplyr)
+
 wb <- createWorkbook()
 
 # Caricamento del dataset ----
-ds <- read.csv("Dataset.csv", header=TRUE, sep=",") #ALL
-#ds <- dataset1[dataset1$Type == 1,] #TRUE
-#ds <- dataset1[dataset1$Type == 0,] #FALSE
+ds <- read.csv("Dataset.csv", header=TRUE, sep=",")
 
 # Definizione intervalli ----
 #TODO: modificare range di intervalli e scegliere come dividere o non dividere features
-colonne_intervalli <- c("url_length", "number_of_digits_in_url", "number_of_special_char_in_url",
+colonne_intervalli <- c("url_length", "number_of_digits_in_url",
                         "domain_length", "number_of_digits_in_domain", "average_subdomain_length",
                         "entropy_of_url", "entropy_of_domain")
 
 breaks_lista <- list(
-  url_length_breaks = c(11, 25, 50, 75, 100, 125, 150, 175, 191),
-  number_of_digits_in_url_breaks = c(-1, 25, 50, 75, 100, 125, 144),
-  number_of_special_char_in_url_breaks = c(3, 9, 15, 25, 50, 75),
-  domain_length_breaks = c(-1,25,50,75,100,125,150,175,182),
-  number_of_digits_in_domain_breaks = c(-1, 10,25,50,75,100, 144),
-  average_subdomain_length_breaks = c(-1,25,50,75,100,110),
+  url_length_breaks = seq(11, 191, by = 10),
+  number_of_digits_in_url_breaks = seq(0, 144, by = 8),
+  domain_length_breaks = seq(0, 182, by = 10),
+  number_of_digits_in_domain_breaks = seq(0, 144, by = 8),
+  average_subdomain_length_breaks = seq(0, 110, by = 5),
   entropy_of_domain_breaks = seq(1.386, 4.957, by = 0.3571),
   entropy_of_url_breaks = seq(2.649, 5.866, by = 0.2683)
 )
