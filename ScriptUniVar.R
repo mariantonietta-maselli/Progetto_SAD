@@ -8,19 +8,14 @@ wb <- createWorkbook()
 ds <- read.csv("Dataset.csv", header=TRUE, sep=",")
 
 # Definizione intervalli ----
-#TODO: modificare range di intervalli e scegliere come dividere o non dividere features
-colonne_intervalli <- c("url_length", "number_of_digits_in_url",
-                        "domain_length", "number_of_digits_in_domain", "average_subdomain_length",
-                        "entropy_of_url", "entropy_of_domain")
+colonne_intervalli <- c("domain_length", "number_of_digits_in_domain", "average_subdomain_length",
+                        "entropy_of_domain")
 
 breaks_lista <- list(
-  url_length_breaks = seq(11, 191, by = 10),
-  number_of_digits_in_url_breaks = seq(0, 144, by = 8),
   domain_length_breaks = seq(0, 182, by = 10),
   number_of_digits_in_domain_breaks = seq(0, 144, by = 8),
   average_subdomain_length_breaks = seq(0, 110, by = 5),
-  entropy_of_domain_breaks = seq(1.386, 4.957, by = 0.3571),
-  entropy_of_url_breaks = seq(2.649, 5.866, by = 0.2683)
+  entropy_of_domain_breaks = seq(1.386, 4.957, by = 0.3571)
 )
 
 # Nomi delle features
@@ -85,8 +80,6 @@ for (colonna in row_nomi_features) {
   # Incrementa la riga per il set successivo di misure
   start_row <- start_row + 1
 }
-
-saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
 
 # Frequenze per variabili non divise in intervalli ----
 # Trova le colonne senza intervalli
@@ -185,9 +178,6 @@ for (colonna in colonne_intervalli) {
   start_row <- start_row + nrow(df) + 2
 }
 
-# Salva il workbook in un file chiamato "Analisi_frequenze.xlsx" nella directory di lavoro
-saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
-
 # Funzione di distribuzione empirica ----
 # Aggiungi il foglio per le frequenze con intervalli (Distribuzione Cumulativa)
 addWorksheet(wb, "Frequenze_intervalli_cumulativa")
@@ -259,9 +249,6 @@ for (colonna in names(ds)) {
   }
 }
 
-# Salva il workbook finale
-saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
-
 # Summary ----
 
 addWorksheet(wb, "Riepilogo_summary")
@@ -290,5 +277,5 @@ for (colonna in names(ds)) {
   start_row <- start_row + nrow(df) + 2
 }
 
-# Salva il workbook con il nuovo foglio aggiunto
+# Salva il workbook
 saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
