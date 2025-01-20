@@ -14,27 +14,32 @@ for(colonna in row_nomi_features){
     tab = table(col)
     len = length(tab)
     desc = paste("Frequenze assolute", colonna)
-    barplot(tab, main = desc)
+    plot(tab, main = desc)
   }
 }
 
-hist(ds$domain_length, freq = TRUE)
+# Grafici domain_length ----
+hist(ds$domain_length, freq = TRUE, col = "skyblue",
+     main = "Istogramma domain_length", xlab = "Valori", ylab = "Frequenze")
 skewness(ds$domain_length)
 kurtosis(ds$domain_length)
-
-hist(ds$number_of_subdomains, freq = TRUE)
-skewness(ds$number_of_subdomains)
-kurtosis(ds$number_of_subdomains)
-
-hist(ds$entropy_of_domain, freq = TRUE)
-skewness(ds$entropy_of_domain)
-kurtosis(ds$entropy_of_domain)
 
 boxplot(ds$domain_length, horizontal = TRUE, col = "skyblue", cex = 0.5,
         main = "Boxplot domain_length")
 
+# Grafici number_of_subdomains ----
+hist(ds$number_of_subdomains, freq = TRUE, col = "skyblue",
+     main = "Istogramma number_of_subdomains", xlab = "Valori", ylab = "Frequenze")
+skewness(ds$number_of_subdomains)
+kurtosis(ds$number_of_subdomains)
+
 boxplot(ds$number_of_subdomains, horizontal = TRUE, col = "skyblue", cex = 0.5,
         main = "Boxplot number_of_subdomains")
+
+# Grafici entropy_of_domain ----
+hist(ds$entropy_of_domain, freq = TRUE)
+skewness(ds$entropy_of_domain)
+kurtosis(ds$entropy_of_domain)
 
 boxplot(ds$entropy_of_domain, horizontal = TRUE, col = "skyblue", cex = 0.5,
         main = "Boxplot entropy_of_domain")
