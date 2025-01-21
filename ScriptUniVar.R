@@ -5,7 +5,7 @@ library(dplyr)
 wb <- createWorkbook()
 
 # Caricamento del dataset ----
-ds <- read.csv("Dataset.csv", header=TRUE, sep=",")
+ds <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
 # Definizione intervalli ----
 colonne_intervalli <- c("domain_length", "number_of_digits_in_domain", "average_subdomain_length",
@@ -278,4 +278,4 @@ for (colonna in names(ds)) {
 }
 
 # Salva il workbook
-saveWorkbook(wb, "Analisi_univariata.xlsx", overwrite = TRUE)
+saveWorkbook(wb, "output/Analisi_univariata_phishing_domain_inlier.xlsx", overwrite = TRUE)
