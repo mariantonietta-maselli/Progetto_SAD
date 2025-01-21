@@ -1,11 +1,14 @@
 # Librerie ----
 library(moments)
+library(dplyr)
+library(data.table)
 
 # Caricamento del dataset ----
-ds <- read.csv("Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
+ds <- read.csv("datasets/Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
+dsi <- ds
 
 # Estrazione del nome delle feature dal sample/dataset ----
-row_nomi_features <- names(ds)[-1] # si esclude la feature Type
+row_nomi_features <- names(ds)
 
 # Ciclo for per visualizzare i barplot di tutte le feature ----
 for(colonna in row_nomi_features){
@@ -18,13 +21,13 @@ for(colonna in row_nomi_features){
   }
 }
 
-# Grafici domain_length ----
+# Grafici domain_length (pre outlier) ----
 hist(ds$domain_length, freq = TRUE, col = "skyblue",
      main = "Istogramma domain_length", xlab = "Valori", ylab = "Frequenze")
 skewness(ds$domain_length)
 kurtosis(ds$domain_length)
 
-boxplot(ds$domain_length, horizontal = TRUE, col = "skyblue", cex = 0.5,
+box_domain_length = boxplot(ds$domain_length, horizontal = TRUE, col = "skyblue", cex = 0.5,
         main = "Boxplot domain_length")
 
 # Grafici number_of_subdomains ----
@@ -43,3 +46,17 @@ kurtosis(ds$entropy_of_domain)
 
 boxplot(ds$entropy_of_domain, horizontal = TRUE, col = "skyblue", cex = 0.5,
         main = "Boxplot entropy_of_domain")
+
+# Rimozione outlier ----
+for(colonna in row_nomi_features) {
+  col = dsi[[colonna]]
+  Q1 = quantile(col, 0.25)
+  Q3 = quantile(col, 0.75)
+  IQR <- Q3 - Q1
+  lower = Q1 - 1.5 * IQR
+  upper = Q3 + 1.5 * IQR
+  dsi <- subset(dsi, col >= lower & col <= upper)
+}
+
+# Stampa su csv il dataset senza outlier
+fwrite(dsi, "datasets/Dataset_Clean_Phishing_Domain_Inlier.csv")
