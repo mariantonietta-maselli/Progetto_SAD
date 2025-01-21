@@ -60,3 +60,23 @@ dsp$entropy_of_url <- NULL
 
 # Stampa su csv il dataset con feature ridotte al dominio ----
 fwrite(dsp, "datasets/Dataset_Clean_Phishing_Domain.csv")
+
+
+# Rimozione outlier per le feature da utilizzare ----
+dsi <- dsp
+
+features <- c("domain_length", "entropy_of_domain")
+
+for(colonna in features) {
+  col = dsi[[colonna]]
+  Q1 = quantile(col, 0.25)
+  Q3 = quantile(col, 0.75)
+  IQR <- Q3 - Q1
+  lower = Q1 - 1.5 * IQR
+  upper = Q3 + 1.5 * IQR
+  dsi <- subset(dsi, col >= lower & col <= upper)
+}
+
+# Stampa su csv il dataset senza outlier
+fwrite(dsi, "datasets/Dataset_Clean_Phishing_Domain_Inlier.csv")
+
