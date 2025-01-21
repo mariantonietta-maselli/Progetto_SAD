@@ -1,5 +1,6 @@
 # Librerie----
 library(corrplot)
+library(data.table)
 
 # Caricamento dataset ----
 dataset <- read.csv("Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
@@ -37,3 +38,13 @@ plot(dataset$domain_length, dataset$number_of_dots_in_domain,
      xlab = "entropy of domain", ylab = "domain length",
      main = "domain length in funzione di number of dots",
      cex = 0.5)
+
+
+modello <- lm(domain_length ~ number_of_subdomains, data = dataset)
+modello
+
+plot(dataset$domain_length, dataset$number_of_subdomains, 
+     xlab = "entropy of domain", ylab = "domain length",
+     main = "domain length in funzione di number of subdomains",
+     cex = 0.5)
+abline(modello, col = "red")
