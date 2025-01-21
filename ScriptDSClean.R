@@ -2,13 +2,14 @@
 library(data.table)
 
 # Caricamento del dataset ----
-ds <- read.csv("Dataset.csv", header=TRUE, sep=",")
+ds <- read.csv("datasets/Dataset.csv", header=TRUE, sep=",")
 
 # Estrazione dal dataset della partizione phishing ----
 dsp <- ds[ds$Type == 1,]
+dsp$Type <- NULL
 
 # Stampa su csv la partizione phishing del dataset ridotto ----
-fwrite(dsp, "Dataset_Phishing.csv")
+fwrite(dsp, "datasets/Dataset_Phishing.csv")
 
 # Rimozione delle feature inutili ----
 ds$number_of_at_in_url <- NULL
@@ -21,6 +22,7 @@ ds$having_anchor <- NULL
 ds$having_dot_in_subdomain <- NULL
 ds$having_hyphen_in_subdomain <- NULL
 ds$average_number_of_dots_in_subdomain <- NULL
+ds$having_repeated_digits_in_domain <- NULL
 ds$average_number_of_hyphens_in_subdomain <- NULL
 ds$having_special_characters_in_subdomain <- NULL
 ds$number_of_special_characters_in_subdomain <- NULL
@@ -30,14 +32,15 @@ ds$having_digits_in_subdomain <- NULL
 ds$having_special_characters_in_domain <- NULL
 
 # Stampa su csv il dataset con feature ridotte ----
-fwrite(ds, "Dataset_Clean.csv")
+fwrite(ds, "datasets/Dataset_Clean.csv")
 
 # Estrazione dal dataset ridotto, della partizione phishing ----
-ds <- read.csv("Dataset_Clean.csv", header=TRUE, sep=",")
+ds <- read.csv("datasets/Dataset_Clean.csv", header=TRUE, sep=",")
 dsp <- ds[ds$Type == 1,]
+dsp$Type <- NULL
 
 # Stampa su csv la partizione phishing del dataset ridotto ----
-fwrite(dsp, "Dataset_Clean_Phishing.csv")
+fwrite(dsp, "datasets/Dataset_Clean_Phishing.csv")
 
 # Rimozione delle feature non legate al dominio ----
 dsp$url_length <- NULL
@@ -55,5 +58,5 @@ dsp$path_length <- NULL
 dsp$having_query <- NULL
 dsp$entropy_of_url <- NULL
 
-# Stampa su csv il dataset con feature ridotte al domino ----
-fwrite(dsp, "Dataset_Clean_Phishing_Domain.csv")
+# Stampa su csv il dataset con feature ridotte al dominio ----
+fwrite(dsp, "datasets/Dataset_Clean_Phishing_Domain.csv")
