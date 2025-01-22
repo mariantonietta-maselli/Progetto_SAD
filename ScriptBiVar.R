@@ -3,7 +3,7 @@ library(corrplot)
 library(data.table)
 
 # Caricamento dataset ----
-dataset <- read.csv("Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
+dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
 
 dataset$Type <- NULL
 dataset$having_repeated_digits_in_domain <- NULL
