@@ -39,12 +39,16 @@ plot(dataset$domain_length, dataset$number_of_dots_in_domain,
      main = "domain length in funzione di number of dots",
      cex = 0.5)
 
-
-modello <- lm(domain_length ~ number_of_subdomains, data = dataset)
+# Regressione lineare ----
+# Il modello prevede la lunghezza del dominio in funzione del numero di sottodomini
+modello <- lm(domain_length ~ entropy_of_domain, data = dataset)
 modello
 
-plot(dataset$domain_length, dataset$number_of_subdomains, 
-     xlab = "entropy of domain", ylab = "domain length",
-     main = "domain length in funzione di number of subdomains",
-     cex = 0.5)
+risultati <- summary(modello)
+risultati
+
+plot(dataset$entropy_of_domain, dataset$domain_length, 
+     xlab = "entropy_of_domain", ylab = "domain length",
+     main = "domain length in funzione di entropy of domain (senza outlier)",
+     cex = 0.5, col = "skyblue")
 abline(modello, col = "red")
