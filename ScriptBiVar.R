@@ -3,7 +3,7 @@ library(corrplot)
 library(data.table)
 
 # Caricamento dataset ----
-dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
+dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
 dataset$Type <- NULL
 dataset$having_repeated_digits_in_domain <- NULL
@@ -40,7 +40,7 @@ plot(dataset$domain_length, dataset$number_of_dots_in_domain,
      cex = 0.5)
 
 # Regressione lineare ----
-# Il modello prevede la lunghezza del dominio in funzione del numero di sottodomini
+# Il modello prevede la lunghezza del dominio in funzione all'entropia dello stesso
 modello <- lm(domain_length ~ entropy_of_domain, data = dataset)
 modello
 
@@ -49,6 +49,22 @@ risultati
 
 plot(dataset$entropy_of_domain, dataset$domain_length, 
      xlab = "entropy_of_domain", ylab = "domain length",
-     main = "domain length in funzione di entropy of domain (senza outlier)",
+     main = "domain length in funzione di entropy of domain (con outlier)",
      cex = 0.5, col = "skyblue")
 abline(modello, col = "red")
+
+# Calcolo residui
+
+residui <- resid(modello)
+
+media_residui <- mean(residui)
+cat(format(media_residui, scientific = FALSE, trim = TRUE))
+
+valori_previsti <- fitted(modello)
+valori_osservati <- dataset$domain_length
+
+# Grafico di densità dei residui
+plot(density(residui), 
+     main = "Distribuzione dei Residui", 
+     xlab = "Residui", ylab = "Densità", 
+     col = "skyblue", lwd = 2)
