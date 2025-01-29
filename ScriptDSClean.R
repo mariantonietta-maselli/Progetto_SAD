@@ -4,6 +4,13 @@ library(data.table)
 # Caricamento del dataset ----
 ds <- read.csv("datasets/Dataset.csv", header=TRUE, sep=",")
 
+# Estrazione dal dataset della partizione legitimate ----
+dsp <- ds[ds$Type == 0,]
+dsp$Type <- NULL
+
+# Stampa su csv la partizione legitimate del dataset ridotto ----
+fwrite(dsp, "datasets/Dataset_Legitimate.csv")
+
 # Estrazione dal dataset della partizione phishing ----
 dsp <- ds[ds$Type == 1,]
 dsp$Type <- NULL
