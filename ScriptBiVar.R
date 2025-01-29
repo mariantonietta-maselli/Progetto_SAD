@@ -32,7 +32,29 @@ plot(dataset$entropy_of_domain, dataset$domain_length,
      cex = 0.5, col = "skyblue")
 abline(modello, col = "red")
 
-# Calcolo residui
+# Scatterplot regressione lineare multipla ----
+
+# Fissa un valore per number_of_subdomains, ad esempio la media
+fixed_subdomains <- mean(dataset$number_of_subdomains)
+
+# Calcola i valori previsti per domain_length con il modello
+predicted_values <- predict(modello, newdata = data.frame(
+  entropy_of_domain = dataset$entropy_of_domain,
+  number_of_subdomains = fixed_subdomains
+))
+
+# Plot dei dati osservati
+plot(dataset$entropy_of_domain, dataset$domain_length, 
+     xlab = "Entropy of Domain", ylab = "Domain Length",
+     main = "Domain Length in funzione di Entropy of Domain (con outlier)",
+     cex = 0.5, col = "skyblue")
+
+# Aggiunge la curva prevista dal modello
+lines(sort(dataset$entropy_of_domain), 
+      predicted_values[order(dataset$entropy_of_domain)], 
+      col = "red", lwd = 2)
+
+# Calcolo residui ----
 
 residui <- resid(modello)
 
