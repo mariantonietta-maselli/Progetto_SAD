@@ -37,3 +37,13 @@ kurtosis(ds$entropy_of_domain)
 
 boxplot(ds$entropy_of_domain, horizontal = TRUE, col = "skyblue", cex = 0.5,
         main = "Boxplot entropy_of_domain")
+
+# Visualizzazione degli scatterplot per domain_length
+plot(ds$number_of_dots_in_domain, ds$domain_length)
+plot(ds$number_of_subdomains, ds$domain_length)
+plot(ds$entropy_of_domain, ds$domain_length)
+plot(ds$number_of_digits_in_domain, ds$domain_length)
+plot(ds$number_of_hyphens_in_domain, ds$domain_length)
+plot(ds$number_of_special_characters_in_domain, ds$domain_length)
+plot(ds$number_of_digits_in_subdomain, ds$domain_length)
+plot(ds$average_subdomain_length, ds$domain_length)
