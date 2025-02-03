@@ -5,11 +5,19 @@ library(data.table)
 #ds <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
 # Pre-selezione di un sample randomico di 60 osservazioni ----
-# dss <- ds[sample(nrow(ds), 60),]
+#dss <- ds[sample(nrow(ds), 60),]
 #fwrite(dss, "datasets/Dataset_Phishing_Sample.csv")
 
+# Pre-selezione di un sample randomico del 1% ----
+#dss <- ds[sample(nrow(ds), 1194),]
+#fwrite(dss, "datasets/Dataset_Phishing_Sample1P.csv")
+
+# Pre-selezione di un sample randomico del 2% ----
+#dss <- ds[sample(nrow(ds), 2388),]
+#fwrite(dss, "datasets/Dataset_Phishing_Sample2P.csv")
+
 # Caricamento del sample ----
-dss <- read.csv("datasets/Dataset_Phishing_Sample.csv", header=TRUE, sep=",")
+dss <- read.csv("datasets/Dataset_Phishing_Sample1p.csv", header=TRUE, sep=",")
 
 # Estrazione della colonna di domain_length ----
 entropy <- dss$entropy_of_domain
