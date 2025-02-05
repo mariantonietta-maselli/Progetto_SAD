@@ -4,17 +4,16 @@ library(data.table)
 # Caricamento del dataset ----
 #ds <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
-# Pre-selezione di un sample randomico di 60 osservazioni ----
-#dss <- ds[sample(nrow(ds), 60),]
-#fwrite(dss, "datasets/Dataset_Phishing_Sample.csv")
-
 # Pre-selezione di un sample randomico del 1% ----
 #dss <- ds[sample(nrow(ds), 1194),]
-#fwrite(dss, "datasets/Dataset_Phishing_Sample1P.csv")
+#fwrite(dss, "datasets/Dataset_Phishing_Sample1p.csv")
 
-# Pre-selezione di un sample randomico del 2% ----
-#dss <- ds[sample(nrow(ds), 2388),]
-#fwrite(dss, "datasets/Dataset_Phishing_Sample2P.csv")
+# Caricamento del sample sintetico ----
+#ds <- read.csv("datasets/Dataset_Phishing_Sample_Qwen.csv", header=TRUE, sep=",")
+
+# Pre-selezione di un sample sintetico pari a 1% del campione reale ----
+#dss <- ds[sample(nrow(ds), 1194),]
+#fwrite(dss, "datasets/Dataset_Phishing_Sample_Qwen1p.csv")
 
 # Caricamento del sample ----
 dss <- read.csv("datasets/Dataset_Phishing_Sample1p.csv", header=TRUE, sep=",")
