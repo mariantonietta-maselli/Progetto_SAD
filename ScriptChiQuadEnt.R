@@ -9,14 +9,14 @@ library(data.table)
 #fwrite(dss, "datasets/Dataset_Phishing_Sample1p.csv")
 
 # Caricamento del sample sintetico ----
-#ds <- read.csv("datasets/Dataset_Phishing_Sample_Qwen.csv", header=TRUE, sep=",")
+#ds <- read.csv("datasets/Dataset_Phishing_Sample_Qwen_NoDup.csv", header=TRUE, sep=",")
 
 # Pre-selezione di un sample sintetico pari a 1% del campione reale ----
 #dss <- ds[sample(nrow(ds), 1194),]
-#fwrite(dss, "datasets/Dataset_Phishing_Sample_Qwen1p.csv")
+#fwrite(dss, "datasets/Dataset_Phishing_Sample_Qwen_NoDup_1p.csv")
 
 # Caricamento del sample ----
-dss <- read.csv("datasets/Dataset_Phishing_Sample1p.csv", header=TRUE, sep=",")
+dss <- read.csv("datasets/Dataset_Phishing_Sample_Qwen_NoDup_1p.csv", header=TRUE, sep=",")
 
 # Estrazione della colonna di domain_length ----
 entropy <- dss$entropy_of_domain
