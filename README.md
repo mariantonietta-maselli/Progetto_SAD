@@ -16,7 +16,7 @@ Questo repository contiene tutti gli artefatti prodotti per l'analisi statistica
     * **Dataset_Clean_Phishing.csv**: La versione clean relativa alla partizione Phishing;
     * **Dataset_Clean_Phishing_Domain.csv**: La versione clean relativa alla partizione Phishing, contenente solamente le feature utili relative al dominio;
     * **Dataset_Clean_Phishing_Domain_Inlier.csv**: La versione clean relativa alla partizione Phishing, contenente solamente le feature utili relative al dominio e con gli outlier rimossi per le feature interessate;
-    * **Dataset_Phishing_Sample1p.csv**: La versione sample della partizione Phishing, contenente l'1% di osservazioni selezionate in maniera randomica e utilizzata per la statistica inferenziale;
+    * **Dataset_Phishing_Sample_1p.csv**: La versione sample della partizione Phishing, contenente l'1% di osservazioni selezionate in maniera randomica e utilizzata per la statistica inferenziale;
     * **Dataset_Phishing_Sample_Qwen.csv**: La versione sample dei dati sintetici, generata tramite l'LLM Qwen2.5-Plus;
     * **Dataset_Phishing_Sample_Qwen_NoDup.csv**: La versione sample dei dati sintetici, generata tramite l'LLM Qwen2.5-Plus e con i duplicati rimossi;
     * **Dataset_Phishing_Sample_Qwen_NoDup_1p.csv**: La versione sample dei dati sintetici, generata tramite l'LLM Qwen2.5-Plus e con i duplicati rimossi, con un numero di righe pari al sample reale;
