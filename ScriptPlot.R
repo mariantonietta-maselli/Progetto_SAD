@@ -4,6 +4,7 @@ library(dplyr)
 library(data.table)
 
 # Caricamento del dataset ----
+dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
 # Estrazione del nome delle feature dal sample/dataset ----
 row_nomi_features <- names(ds)

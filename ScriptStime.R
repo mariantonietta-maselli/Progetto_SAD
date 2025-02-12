@@ -1,4 +1,3 @@
-# Popolazione di riferimento: L'insieme degli url conservati su siti anti-phishing
 # Caricamento del sample ----
 df <- read.csv("datasets/Dataset_Phishing_Sample1p.csv")
 
