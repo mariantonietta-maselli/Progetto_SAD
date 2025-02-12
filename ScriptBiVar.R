@@ -1,10 +1,11 @@
-# Librerie----
+# Librerie ----
 library(corrplot)
 library(data.table)
 
 # Caricamento dataset ----
 dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
 
+# Analisi delle correlazioni ----
 correlations <- cor(dataset)
 
 corrplot(
@@ -33,7 +34,6 @@ plot(dataset$entropy_of_domain, dataset$domain_length,
 abline(modello, col = "red")
 
 # Scatterplot regressione lineare multipla ----
-
 # Fissa un valore per number_of_subdomains, ad esempio la media
 fixed_subdomains <- mean(dataset$number_of_subdomains)
 
@@ -55,7 +55,6 @@ lines(sort(dataset$entropy_of_domain),
       col = "red", lwd = 2)
 
 # Calcolo residui ----
-
 residui <- resid(modello)
 
 media_residui <- mean(residui)

@@ -1,4 +1,4 @@
-# Librerie----
+# Librerie ----
 library(openxlsx)
 library(dplyr)
 
@@ -21,7 +21,7 @@ breaks_lista <- list(
 # Nomi delle features
 row_nomi_features <- names(ds)
 
-# Misure descrittive calcolate per tutte le features (senza tener conto degli intervalli) ----
+# Misure descrittive calcolate per tutte le features (senza tener conto degli intervalli)
 col_misure_descrittive_univar <- c("Media","Moda","Mediana", "Varianza", 
                                "Dev. Standard", "Quantili", "Range", "IQR")
 
@@ -31,6 +31,7 @@ calcolate_mode <- function(x) {
   ux[which.max(tabulate(match(x, ux)))]
 }
 
+# Calcolo misure descrittive principali ----
 # Aggiunge un foglio al workbook relativo all'"Analisi univariata"
 addWorksheet(wb, "Analisi univariata")
 
@@ -143,7 +144,7 @@ for (colonna in colonne_non_intervalli) {
   start_row <- start_row + nrow(df) + 2
 }
 
-# Aggiunge il foglio per le frequenze intervallate
+# Frequenze per variabili divise in intervalli ----
 addWorksheet(wb, "Frequenze_intervalli")
 
 # Scrive i dati delle frequenze per le variabili con intervalli

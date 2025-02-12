@@ -6,10 +6,10 @@ library(data.table)
 # Caricamento del dataset ----
 dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
-# Estrazione del nome delle feature dal sample/dataset ----
+# Estrazione del nome delle feature dal sample/dataset
 row_nomi_features <- names(ds)
 
-# Ciclo for per visualizzare i barplot di tutte le feature ----
+# Ciclo for per visualizzare i barplot di tutte le feature
 for(colonna in row_nomi_features){
   if(!startsWith(colonna,"having")){ # si escludono le feature booleane
     col = ds[[colonna]]

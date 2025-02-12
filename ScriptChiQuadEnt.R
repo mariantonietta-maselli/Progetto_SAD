@@ -1,4 +1,4 @@
-# Librerie
+# Librerie ----
 library(data.table)
 
 # Caricamento del dataset ----
@@ -18,23 +18,23 @@ library(data.table)
 # Caricamento del sample ----
 dss <- read.csv("datasets/Dataset_Phishing_Sample_Qwen_NoDup_1p.csv", header=TRUE, sep=",")
 
-# Estrazione della colonna di domain_length ----
+# Estrazione della colonna di domain_length
 entropy <- dss$entropy_of_domain
 entropy
 
-# Calcolo del numero di osservazioni ----
+# Calcolo del numero di osservazioni
 n <- length(entropy)
 n
 
-# Calcolo della media ----
+# Calcolo della media
 m <- mean(entropy)
 m
 
-# Calcolo della deviazione standard ----
+# Calcolo della deviazione standard
 d <- sd(entropy)
 d
 
-# Determinazione dei quantili della normale ----
+# Determinazione dei quantili della normale
 a <- numeric(4)
 for (i in 1:4) {
   a[i] <- qnorm(0.2*i, mean = m, sd = d)
