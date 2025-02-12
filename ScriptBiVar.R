@@ -27,6 +27,7 @@ modello
 risultati <- summary(modello)
 risultati
 
+# Scatterplot e retta interpolante ----
 plot(dataset$entropy_of_domain, dataset$domain_length, 
      xlab = "entropy_of_domain", ylab = "domain length",
      main = "domain length in funzione di entropy of domain (con outlier)",
