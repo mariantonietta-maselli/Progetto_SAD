@@ -3,7 +3,7 @@ library(corrplot)
 library(data.table)
 
 # Caricamento dataset ----
-dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain.csv", header=TRUE, sep=",")
+dataset <- read.csv("datasets/Dataset_Clean_Phishing_Domain_Inlier.csv", header=TRUE, sep=",")
 
 # Analisi delle correlazioni ----
 correlations <- cor(dataset)
@@ -33,27 +33,6 @@ plot(dataset$entropy_of_domain, dataset$domain_length,
      cex = 0.5, col = "skyblue")
 abline(modello, col = "red")
 
-# Scatterplot regressione lineare multipla ----
-# Fissa un valore per number_of_subdomains, ad esempio la media
-fixed_subdomains <- mean(dataset$number_of_subdomains)
-
-# Calcola i valori previsti per domain_length con il modello
-predicted_values <- predict(modello, newdata = data.frame(
-  entropy_of_domain = dataset$entropy_of_domain,
-  number_of_subdomains = fixed_subdomains
-))
-
-# Plot dei dati osservati
-plot(dataset$entropy_of_domain, dataset$domain_length, 
-     xlab = "Entropy of Domain", ylab = "Domain Length",
-     main = "Domain Length in funzione di Entropy of Domain (con outlier)",
-     cex = 0.5, col = "skyblue")
-
-# Aggiunge la curva prevista dal modello
-lines(sort(dataset$entropy_of_domain), 
-      predicted_values[order(dataset$entropy_of_domain)], 
-      col = "red", lwd = 2)
-
 # Calcolo residui ----
 residui <- resid(modello)
 
@@ -62,9 +41,3 @@ cat(format(media_residui, scientific = FALSE, trim = TRUE))
 
 valori_previsti <- fitted(modello)
 valori_osservati <- dataset$domain_length
-
-# Grafico di densità dei residui
-plot(density(residui), 
-     main = "Distribuzione dei Residui", 
-     xlab = "Residui", ylab = "Densità", 
-     col = "skyblue", lwd = 2)
